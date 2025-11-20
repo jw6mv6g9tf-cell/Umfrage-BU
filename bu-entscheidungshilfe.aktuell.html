@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>BU-Entscheidungshilfe</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to bottom right, #f0f8ff, #e6f4fb);
+      margin: 0;
+      padding: 40px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #018FD7;
+      margin-bottom: 30px;
+    }
+
+    .question {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 650px;
+      margin: 20px auto;
+      display: none;
+    }
+
+    .question.active {
+      display: block;
+    }
+
+    .buttons {
+      margin-top: 15px;
+    }
+
+    button {
+      margin: 10px 10px 0 0;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #018FD7;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0171a7;
+    }
+
+    .back-button {
+      background-color: #ccc;
+      color: #333;
+    }
+
+    .result {
+      max-width: 650px;
+      margin: 40px auto 20px;
+      padding: 24px;
+      border-left: 6px solid;
+      border-radius: 10px;
+      font-size: 18px;
+      box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+      background-color: #fff;
+      display: none;
+    }
+
+    .result.strong {
+      border-color: #D32F2F;
+      background-color: #ffebee;
+    }
+
+    .result.medium {
+      border-color: #FBC02D;
+      background-color: #fffde7;
+    }
+
+    .result.info {
+      border-color: #0288D1;
+      background-color: #e1f5fe;
+    }
+
+    .result.good {
+      border-color: #388E3C;
+      background-color: #e8f5e9;
+    }
+
+    .restart {
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 20px; }
+      button { width: 100%; margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Benötigen Sie eine Berufsunfähigkeitsversicherung?</h1>
+
+<!-- Fragen -->
+<div class="question active" id="q1">
+  <p>1. Können Sie Ihre laufenden Ausgaben ohne Einkommen länger als 6 Monate decken?</p>
+  <div class="buttons">
+    <button onclick="next('q2')">Ja</button>
+    <button onclick="showResult('strong')">Nein / Unsicher</button>
+  </div>
+</div>
+
+<div class="question" id="q2">
+  <p>2. Wäre ein dauerhafter Einkommensverlust für Sie oder Ihre Familie existenzbedrohend?</p>
+  <div class="buttons">
+    <button onclick="next('q3')">Nein</button>
+    <button onclick="showResult('medium')">Ja / Unsicher</button>
+    <button class="back-button" onclick="back('q1')">Zurück</button>
+  </div>
+</div>
+
+<div class="question" id="q3">
+  <p>3. Wissen Sie, wie hoch Ihre gesetzliche Erwerbsminderungsrente wäre?</p>
+  <div class="buttons">
+    <button onclick="next('q4')">Ja</button>
+    <button onclick="showResult('strong')">Nein / Unsicher</button>
+    <button class="back-button" onclick="back('q2')">Zurück</button>
+  </div>
+</div>
+
+<div class="question" id="q4">
+  <p>4. Wissen Sie, dass Sie die volle gesetzliche Erwerbsminderungsrente nur erhalten, wenn Sie in keinem Beruf mehr arbeiten können?</p>
+  <div class="buttons">
+    <button onclick="next('q5')">Ja</button>
+    <button onclick="showResult('strong')">Nein / Unsicher</button>
+    <button class="back-button" onclick="back('q3')">Zurück</button>
+  </div>
+</div>
+
+<div class="question" id="q5">
+  <p>5. Ist Ihr Beruf körperlich oder psychisch belastend?</p>
+  <div class="buttons">
+    <button onclick="next('q6')">Nein</button>
+    <button onclick="showResult('medium')">Ja / Unsicher</button>
+    <button class="back-button" onclick="back('q4')">Zurück</button>
+  </div>
+</div>
+
+<div class="question" id="q6">
+  <p>6. Haben Sie bereits eine Berufsunfähigkeitsversicherung abgeschlossen?</p>
+  <div class="buttons">
+    <button onclick="next('q7')">Ja</button>
+    <button onclick="showResult('medium')">Nein / Unsicher</button>
+    <button class="back-button" onclick="back('q5')">Zurück</button>
+  </div>
+</div>
+
+<div class="question" id="q7">
+  <p>7. Haben Sie Ihre Berufsunfähigkeitsversicherung in den letzten zwei Jahren überprüft?</p>
+  <div class="buttons">
+    <button onclick="next('q8')">Ja</button>
+    <button onclick="showResult('info')">Nein / Unsicher</button>
+    <button class="back-button" onclick="back('q6')">Zurück</button>
+  </div>
+</div>
+
+<div class="question" id="q8">
+  <p>8. Kennen Sie jemanden, der durch Krankheit oder Unfall berufsunfähig geworden ist?</p>
+  <div class="buttons">
+    <button onclick="showResult('good')">Nein</button>
+    <button onclick="showResult('medium')">Ja / Unsicher</button>
+    <button class="back-button" onclick="back('q7')">Zurück</button>
+  </div>
+</div>
+
+<!-- Ergebnis -->
+<div id="result" class="result"></div>
+
+<!-- Ergebnis-Buttons -->
+<div id="result-controls" class="restart">
+  <button onclick="backToLastQuestion()">Zurück zur letzten Frage</button>
+  <button onclick="restartQuiz()">Zurück zur ersten Frage</button> </div>
+
+<script>
+  let lastQuestionId = "";
+
+  function next(id) {
+    const active = document.querySelector('.question.active');
+    if (active) {
+      lastQuestionId = active.id;
+      active.classList.remove('active');
+    }
+    document.getElementById(id).classList.add('active');
+  }
+
+  function back(id) {
+    document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function backToLastQuestion() {
+    if (lastQuestionId) {
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('result-controls').style.display = 'none';
+      document.getElementById(lastQuestionId).classList.add('active');
+    }
+  }
+
+  function restartQuiz() {
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('result-controls').style.display = 'none';
+    document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+    document.getElementById('q1').classList.add('active');
+  }
+
+  function showResult(type) {
+    document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+    const resultBox = document.getElementById('result');
+    const controls = document.getElementById('result-controls');
+
+    resultBox.className = 'result ' + type;
+    resultBox.style.display = 'block';
+    controls.style.display = 'block';
+
+    const texts = {
+      strong: "Eine Berufsunfähigkeitsversicherung ist dringend zu empfehlen – Sie sind finanziell stark auf Ihr Einkommen angewiesen. Lassen Sie sich unverbindlich bei der Inhausagentur beraten. An unseren Infoständen im Max und im Casino am 25. November und am 27. November erhalten Sie weitere Informationen.",
+      medium: "Eine Berufsunfähigkeitsversicherung ist sehr sinnvoll – es bestehen gewisse Risiken, die abgesichert werden sollten. Ihre Inhausagentur steht Ihnen beratend zur Seite. Besuchen Sie dazu unsere Infostände im Max und im Casino (25. November und am 27. November).",
+      info: "Sie haben bereits eine BU-Versicherung, aber eine Überprüfung ist empfehlenswert. Unsere Inhausagentur unterstützt Sie gerne bei der Anpassung. Oder informieren Sie sich direkt am am 25. November und am 27. November an den Infoständen im Max und im Casino.",
+      good: "Sie sind gut aufgestellt – bleiben Sie aufmerksam und prüfen Sie Ihre Absicherung regelmäßig. Falls Sie Fragen haben, berät Sie die Inhausagentur gerne. Auch an den Infoständen (am 25. November und am 27. November im Max und im Casino) gibt es weitere Infos."
+    };
+
+    resultBox.innerText = texts[type];
+  }
+</script>
+
+</body>
+</html>
+
